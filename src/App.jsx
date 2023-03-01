@@ -13,7 +13,19 @@ function App() {
     connections: [],
   }]);
 
-  const elems = mapNodesState.map(elem => <MapNode key={elem.id} text={elem.text} />);
+  const elems = mapNodesState.map(elem => <MapNode mapNodeObj={elem} onChange={onTextAreaTextChange} key={elem.id} />);
+
+
+  function onTextAreaTextChange(e) {
+    setMapNodesState(prev => {
+      return prev.map(elem => {
+        return {
+          ...elem,
+          text: e.target.value,
+        }
+      })
+    })
+  }
 
   function saveToLocalStorage() {
     // найти все textfield
@@ -52,6 +64,7 @@ function App() {
       setDownloadLink(link);
     }
   }
+
 
   return (
     <div className="App">

@@ -1,5 +1,3 @@
 export default function MapNode(props) {
-  return (
-    <textarea defaultValue={props.text} />
-  )
+  return <textarea id={props.mapNodeObj.id} value={props.mapNodeObj.text} onChange={props.onChange} />;
 }
