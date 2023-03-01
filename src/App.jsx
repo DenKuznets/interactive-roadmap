@@ -7,7 +7,7 @@ import { _ } from "lodash";
 
 function App() {
   const [downloadLink, setDownloadLink] = useState("");
-  const [mapNodesState, setMapNodesState] = useState(() => [
+  const [roadmapState, setRoadmapState] = useState(() => [
     {
       text: "lalala",
       id: nanoid(),
@@ -15,12 +15,12 @@ function App() {
     },
   ]);
 
-  const elems = mapNodesState.map((elem) => (
+  const elems = roadmapState.map((elem) => (
     <MapNode mapNodeObj={elem} onChange={onTextAreaTextChange} key={elem.id} />
   ));
 
   function onTextAreaTextChange(e) {
-    setMapNodesState((prev) => {
+    setRoadmapState((prev) => {
       return prev.map((elem) => {
         return {
           ...elem,
@@ -31,43 +31,30 @@ function App() {
   }
 
   function saveToLocalStorage() {
-    let json = JSON.stringify(mapNodesState);
+    let json = JSON.stringify(roadmapState);
     localStorage.setItem("roadmapState", json);
     if (
-      _.isEqual(JSON.parse(localStorage.getItem("roadmapState")), mapNodesState)
+      _.isEqual(JSON.parse(localStorage.getItem("roadmapState")), roadmapState)
     )
       console.log("saved to localStorage");
   }
 
-  function createBackup() {}
-
-  function saveToJSON() {
-    // найти все textfield
-    const textFields = document.querySelectorAll("textarea");
-
-    // считать текст из них
-    for (let tf of textFields) {
-      let userText = tf.value;
-      let obj = {
-        text: userText,
-      };
-      let json = JSON.stringify(obj);
-      let blob = new Blob([json], { type: "application/json" });
-      let url = URL.createObjectURL(blob);
-      let link = (
-        <a download={"backup.json"} href={url}>
-          Download backup.json
-        </a>
-      );
-      console.log(downloadLink);
-      setDownloadLink(link);
-    }
+  function createBackup() {
+    let json = JSON.stringify(roadmapState);
+    let blob = new Blob([json], { type: "application/json" });
+    let url = URL.createObjectURL(blob);
+    let link = (
+      <a download={"backup.json"} href={url}>
+        Download backup.json
+      </a>
+    );
+    setDownloadLink(link);
   }
 
   return (
     <div className="App">
       <Button onClick={saveToLocalStorage} text="save to localStorage" />
-      <Button onClick={saveToJSON} text="save to JSON" />
+      <Button onClick={createBackup} text="save to JSON" />
       <br />
       {elems}
       <br />
