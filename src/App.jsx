@@ -3,13 +3,14 @@ import MapNode from "./components/MapNode";
 import Button from "./components/Button";
 import { useState } from "react";
 import { nanoid } from "nanoid";
-import { getStateFromLocalStorage , saveStateToLocalStorage } from "./utils";
+import { getStateFromLocalStorage, saveStateToLocalStorage, createBackupLink } from "./utils";
 
 function App() {
   const localStorageKey = "roadmapState";
   const [downloadLink, setDownloadLink] = useState("");
   const [roadmapState, setRoadmapState] = useState(() => {
     const localState = getStateFromLocalStorage(localStorageKey);
+    // при загрузке страницы, проверяем есть ли сохраненные данные, если нет, создаем новый roadmap с одним объектом
     return (
       localState || [
         {
@@ -23,7 +24,7 @@ function App() {
 
   const elems = roadmapState.map((elem) => (
     <MapNode mapNodeObj={elem} onChange={onTextAreaTextChange} key={elem.id} />
-  ));  
+  ));
 
   function onTextAreaTextChange(e) {
     setRoadmapState((prev) => {
@@ -34,29 +35,15 @@ function App() {
         };
       });
     });
-  }
-
-  function save() {
-    saveStateToLocalStorage(localStorageKey, roadmapState);
-  }
-
-
-  function createBackup() {
-    let json = JSON.stringify(roadmapState);
-    let blob = new Blob([json], { type: "application/json" });
-    let url = URL.createObjectURL(blob);
-    let link = (
-      <a download={"backup.json"} href={url}>
-        Download backup.json
-      </a>
-    );
-    setDownloadLink(link);
-  }
+  } 
 
   return (
     <div className="App">
-      <Button onClick={save} text="save to localStorage" />
-      <Button onClick={createBackup} text="save to JSON" />
+      <Button
+        onClick={() => saveStateToLocalStorage(localStorageKey, roadmapState)}
+        text="save to localStorage"
+      />
+      <Button onClick={() => setDownloadLink(createBackupLink(roadmapState))} text="save to JSON" />
       <br />
       {elems}
       <br />
