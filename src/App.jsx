@@ -1,5 +1,5 @@
 import "./App.css";
-import Textfield from "./components/Textfield";
+import MapNode from "./components/MapNode";
 import Button from "./components/Button";
 import { useState } from "react";
 import { nanoid } from "nanoid";
@@ -7,6 +7,13 @@ import { nanoid } from "nanoid";
 function App() {
 
   const [downloadLink, setDownloadLink] = useState('');
+  const [mapNodesState, setMapNodesState] = useState(() => [{
+    text: "lalala",
+    id: nanoid(),
+    connections: [],
+  }]);
+
+  const elems = mapNodesState.map(elem => <MapNode key={elem.id} text={elem.text} />);
 
   function saveToLocalStorage() {
     // найти все textfield
@@ -17,6 +24,10 @@ function App() {
       localStorage.setItem('textfieldId1', text);
       console.log(localStorage.getItem("textfieldId1"));
     }
+  }
+
+  function createBackup() {
+    
   }
 
   function saveToJSON() {
@@ -32,18 +43,13 @@ function App() {
       let json = JSON.stringify(obj);
       let blob = new Blob([json], { type: 'application/json' });
       let url = URL.createObjectURL(blob);
-      let a = document.createElement('a');
-      a.download = 'backup.json';
-      a.href = url;
-      a.textContent = 'Download backup.json';
       let link = (
         <a download={"backup.json"} href={url}>
           Download backup.json
         </a>
       );
-      setDownloadLink(link);
-      // console.log(a);
       console.log(downloadLink);
+      setDownloadLink(link);
     }
   }
 
@@ -52,7 +58,7 @@ function App() {
       <Button onClick={saveToLocalStorage} text="save to localStorage" />
       <Button onClick={saveToJSON} text="save to JSON" />
       <br />
-      <Textfield />
+      {elems}
       <br />
       {downloadLink}
     </div>
