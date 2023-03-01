@@ -1,2 +1,1 @@
-
-save text to json on user pc
+продумать структуру объекта
